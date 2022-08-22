@@ -1,0 +1,61 @@
+// Function getBranch
+// The parameter level says low into the binary tree you want to go.
+// The top is level=0.
+// The parameter branch gives the path of the branch with the bits of the
+// branch telling which path to take at any given level.
+// If you are just getting the top level, that is level=0,
+// which should only have one node at max,
+// the branch parameter isn't used at all.
+// If you are getting a node from the 1st level,
+// bit 0 of the branch node will tell which direction to branch.
+// If a bit is 0, it branches to the left node.
+// If a bit is 1, it branches to the right node.
+// If we want to get a node at level = 3, three bits of the branch parameter will be used.
+// To decide which branch to take at the top and to get to level 1,
+// bit 2 will be used.
+// Then bit 1 will decide which path will be taken from level 1 to get to level 2.
+// Then bit 0 will be used at the end to decide which branch to take from level 2 to level 3.
+// For larger level values, the same idea is followed. The first branch at level 0 uses the highest bit corresponding to the level chosen.
+// For instance, if we are getting a node at level 6, 6 bits will be used and the first bit used will be bit 5.
+// The last node used will be bit 0.
+
+struct Node * getBranch(struct Node * node, int level, int branch){
+    if(node==NULL){
+//        printf("Tree is empty. Value can't be found at desired location because the tree is empty.\n");
+//        printf("\n");
+        return(NULL);
+    }
+
+    for(int i = level - 1; i >= 0; i--){
+        if((branch&exponential(2, i))>0){
+            node = (*node).rNode;
+        }else{
+            node = (*node).lNode;
+        }
+
+        if(node==NULL){
+//            printf("There is no node at that level.\n");
+//            printf("\n");
+            return(NULL);
+        }
+    }
+    return(node);
+};
+
+//Uses getBranch to print the entire tree
+void printTreeGraph3(struct Node * node){
+    int levels = getNodeHeight(node);
+    struct Node * tempNode = NULL;
+    for(int level = 0; level <=levels; level++){
+        for(int branch = 0; branch<exponential(2,level); branch++){
+            tempNode = getBranch(node, level, branch);
+            if(tempNode==NULL){
+                printf(" NULL ");
+            }else{
+                printf(" %d ", (*tempNode).val);
+            }
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
